@@ -674,7 +674,17 @@ the specific language governing permissions and limitations under the Apache Lic
             this.container.attr("id", this.containerId);
 
             // cache the body so future lookups are cheap
-            this.body = thunk(function() { return opts.element.closest("body"); });
+            this.body = thunk(function() {
+	            if (opts.dropdownContainer === undefined || opts.dropdownContainer === "body") {
+	            	return opts.element.closest("body");
+	            }
+	            if (opts.dropdownContainer === "auto") {
+	            	return opts.element.closest("[position='fixed']").length && opts.element.closest("[position='fixed']")
+	            	|| opts.element.closest("[position='absolute']").length && opts.element.closest("[position='absolute']")
+	            	|| opts.element.closest("body");
+	            }
+            	return opts.dropdownContainer;
+            });
 
             syncCssClasses(this.container, this.opts.element, this.opts.adaptContainerCssClass);
 
